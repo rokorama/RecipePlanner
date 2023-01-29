@@ -1,0 +1,64 @@
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.0.0
+MinimumVisualStudioVersion = 16.0.0.0
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RecipePlanner.Server", "Server\RecipePlanner.Server.csproj", "{630E93E1-9033-4C69-B1A7-2E22A06CC98B}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RecipePlanner.Client", "Client\RecipePlanner.Client.csproj", "{6405CF14-5287-4B1E-B206-E556E730D352}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RecipePlanner.Shared", "Shared\RecipePlanner.Shared.csproj", "{B858A37E-DEEF-49A4-8D28-632C13CDA7ED}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Debug|x64 = Debug|x64
+		Debug|x86 = Debug|x86
+		Release|Any CPU = Release|Any CPU
+		Release|x64 = Release|x64
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{6405CF14-5287-4B1E-B206-E556E730D352}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6405CF14-5287-4B1E-B206-E556E730D352}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6405CF14-5287-4B1E-B206-E556E730D352}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{6405CF14-5287-4B1E-B206-E556E730D352}.Debug|x64.Build.0 = Debug|Any CPU
+		{6405CF14-5287-4B1E-B206-E556E730D352}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{6405CF14-5287-4B1E-B206-E556E730D352}.Debug|x86.Build.0 = Debug|Any CPU
+		{6405CF14-5287-4B1E-B206-E556E730D352}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6405CF14-5287-4B1E-B206-E556E730D352}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6405CF14-5287-4B1E-B206-E556E730D352}.Release|x64.ActiveCfg = Release|Any CPU
+		{6405CF14-5287-4B1E-B206-E556E730D352}.Release|x64.Build.0 = Release|Any CPU
+		{6405CF14-5287-4B1E-B206-E556E730D352}.Release|x86.ActiveCfg = Release|Any CPU
+		{6405CF14-5287-4B1E-B206-E556E730D352}.Release|x86.Build.0 = Release|Any CPU
+		{630E93E1-9033-4C69-B1A7-2E22A06CC98B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{630E93E1-9033-4C69-B1A7-2E22A06CC98B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{630E93E1-9033-4C69-B1A7-2E22A06CC98B}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{630E93E1-9033-4C69-B1A7-2E22A06CC98B}.Debug|x64.Build.0 = Debug|Any CPU
+		{630E93E1-9033-4C69-B1A7-2E22A06CC98B}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{630E93E1-9033-4C69-B1A7-2E22A06CC98B}.Debug|x86.Build.0 = Debug|Any CPU
+		{630E93E1-9033-4C69-B1A7-2E22A06CC98B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{630E93E1-9033-4C69-B1A7-2E22A06CC98B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{630E93E1-9033-4C69-B1A7-2E22A06CC98B}.Release|x64.ActiveCfg = Release|Any CPU
+		{630E93E1-9033-4C69-B1A7-2E22A06CC98B}.Release|x64.Build.0 = Release|Any CPU
+		{630E93E1-9033-4C69-B1A7-2E22A06CC98B}.Release|x86.ActiveCfg = Release|Any CPU
+		{630E93E1-9033-4C69-B1A7-2E22A06CC98B}.Release|x86.Build.0 = Release|Any CPU
+		{B858A37E-DEEF-49A4-8D28-632C13CDA7ED}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B858A37E-DEEF-49A4-8D28-632C13CDA7ED}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B858A37E-DEEF-49A4-8D28-632C13CDA7ED}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{B858A37E-DEEF-49A4-8D28-632C13CDA7ED}.Debug|x64.Build.0 = Debug|Any CPU
+		{B858A37E-DEEF-49A4-8D28-632C13CDA7ED}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{B858A37E-DEEF-49A4-8D28-632C13CDA7ED}.Debug|x86.Build.0 = Debug|Any CPU
+		{B858A37E-DEEF-49A4-8D28-632C13CDA7ED}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B858A37E-DEEF-49A4-8D28-632C13CDA7ED}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B858A37E-DEEF-49A4-8D28-632C13CDA7ED}.Release|x64.ActiveCfg = Release|Any CPU
+		{B858A37E-DEEF-49A4-8D28-632C13CDA7ED}.Release|x64.Build.0 = Release|Any CPU
+		{B858A37E-DEEF-49A4-8D28-632C13CDA7ED}.Release|x86.ActiveCfg = Release|Any CPU
+		{B858A37E-DEEF-49A4-8D28-632C13CDA7ED}.Release|x86.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {85C0845A-C1BD-4413-B1D5-71BF079F1E31}
+	EndGlobalSection
+EndGlobal
