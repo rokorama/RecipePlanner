@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using RecipePlanner.Server.Data;
 
@@ -11,9 +12,11 @@ using RecipePlanner.Server.Data;
 namespace RecipePlanner.Server.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20230208191410_Add-DB-sets")]
+    partial class AddDBsets
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -90,7 +93,7 @@ namespace RecipePlanner.Server.Migrations
                     b.Property<double>("Quantity")
                         .HasColumnType("float");
 
-                    b.Property<Guid>("RecipeId")
+                    b.Property<Guid?>("RecipeId")
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
@@ -107,8 +110,7 @@ namespace RecipePlanner.Server.Migrations
                             Name = "Rice",
                             Optional = false,
                             Preparation = "cooked",
-                            Quantity = 1.0,
-                            RecipeId = new Guid("2a3d6c16-98f9-47bf-ad3a-5ed26ec20651")
+                            Quantity = 1.0
                         },
                         new
                         {
@@ -116,8 +118,7 @@ namespace RecipePlanner.Server.Migrations
                             Measurement = "cup",
                             Name = "Egg",
                             Optional = false,
-                            Quantity = 1.0,
-                            RecipeId = new Guid("2a3d6c16-98f9-47bf-ad3a-5ed26ec20651")
+                            Quantity = 1.0
                         },
                         new
                         {
@@ -125,8 +126,7 @@ namespace RecipePlanner.Server.Migrations
                             Measurement = "tbsp",
                             Name = "Soy sauce",
                             Optional = false,
-                            Quantity = 1.0,
-                            RecipeId = new Guid("2a3d6c16-98f9-47bf-ad3a-5ed26ec20651")
+                            Quantity = 1.0
                         },
                         new
                         {
@@ -135,8 +135,7 @@ namespace RecipePlanner.Server.Migrations
                             Name = "Garlic",
                             Optional = false,
                             Preparation = "minced",
-                            Quantity = 1.0,
-                            RecipeId = new Guid("2a3d6c16-98f9-47bf-ad3a-5ed26ec20651")
+                            Quantity = 1.0
                         },
                         new
                         {
@@ -144,8 +143,7 @@ namespace RecipePlanner.Server.Migrations
                             Measurement = "handful",
                             Name = "Frozen green peas",
                             Optional = true,
-                            Quantity = 2.0,
-                            RecipeId = new Guid("2a3d6c16-98f9-47bf-ad3a-5ed26ec20651")
+                            Quantity = 2.0
                         });
                 });
 
@@ -222,6 +220,14 @@ namespace RecipePlanner.Server.Migrations
                             Index = 5,
                             Optional = true,
                             RecipeId = new Guid("2a3d6c16-98f9-47bf-ad3a-5ed26ec20651")
+                        },
+                        new
+                        {
+                            Id = new Guid("1a8d836e-db09-4a2c-8d1d-361a6ef73dda"),
+                            Content = "Add in any additional ingredients such as frozen peas and let them heat through",
+                            Index = 5,
+                            Optional = true,
+                            RecipeId = new Guid("2a3d6c16-98f9-47bf-ad3a-5ed26ec20651")
                         });
                 });
 
@@ -229,9 +235,7 @@ namespace RecipePlanner.Server.Migrations
                 {
                     b.HasOne("RecipePlanner.Shared.Recipe", null)
                         .WithMany("Ingredients")
-                        .HasForeignKey("RecipeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("RecipeId");
                 });
 
             modelBuilder.Entity("RecipePlanner.Shared.RecipeStep", b =>

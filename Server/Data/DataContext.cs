@@ -27,6 +27,7 @@ public class DataContext : DbContext
         modelBuilder.Entity<RecipeIngredient>().HasData(
             new RecipeIngredient
             {
+                RecipeId = Guid.Parse("2A3D6C16-98F9-47BF-AD3A-5ED26EC20651"),
                 Id = Guid.Parse("68698FB1-DA0E-4058-9295-4B3D949E55E9"),
                 Name = "Rice",
                 Quantity = 1,
@@ -35,6 +36,7 @@ public class DataContext : DbContext
             },
             new RecipeIngredient
             {
+                RecipeId = Guid.Parse("2A3D6C16-98F9-47BF-AD3A-5ED26EC20651"),
                 Id = Guid.Parse("97065633-14B7-457F-8F2E-EA31D2F78D8D"),
                 Name = "Egg",
                 Quantity = 1,
@@ -42,6 +44,7 @@ public class DataContext : DbContext
             },
             new RecipeIngredient
             {
+                RecipeId = Guid.Parse("2A3D6C16-98F9-47BF-AD3A-5ED26EC20651"),
                 Id = Guid.Parse("D365C0BE-30CA-4A23-B876-B9E51DA0B29E"),
                 Name = "Soy sauce",
                 Quantity = 1,
@@ -49,6 +52,7 @@ public class DataContext : DbContext
             },
             new RecipeIngredient
             {
+                RecipeId = Guid.Parse("2A3D6C16-98F9-47BF-AD3A-5ED26EC20651"),
                 Id = Guid.Parse("4516D7ED-0926-418F-9DF7-A1A2F1855999"),
                 Name = "Garlic",
                 Quantity = 1,
@@ -57,6 +61,7 @@ public class DataContext : DbContext
             },
             new RecipeIngredient
             {
+                RecipeId = Guid.Parse("2A3D6C16-98F9-47BF-AD3A-5ED26EC20651"),
                 Id = Guid.Parse("1094E6B3-0EAD-4783-A647-EA85A1CE7CEB"),
                 Name = "Frozen green peas",
                 Quantity = 2,
@@ -108,15 +113,11 @@ public class DataContext : DbContext
                 Index = 5,
                 Content = "Add in any additional ingredients such as frozen peas and let them heat through",
                 Optional = true
-            },
-            new RecipeStep
-            {
-                RecipeId = Guid.Parse("2A3D6C16-98F9-47BF-AD3A-5ED26EC20651"),
-                Id = Guid.Parse("1A8D836E-DB09-4A2C-8D1D-361A6EF73DDA"),
-                Index = 5,
-                Content = "Add in any additional ingredients such as frozen peas and let them heat through",
-                Optional = true
             }
         );
     }
+
+    public DbSet<Recipe> Recipes { get; set; } = null!;
+    public DbSet<RecipeIngredient> RecipeIngredients { get; set; } = null!;
+    public DbSet<RecipeStep> RecipeSteps { get; set; } = null!;
 }
