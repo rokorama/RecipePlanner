@@ -27,4 +27,10 @@ public class RecipeService : IRecipeService
 
         RecipesChanged!.Invoke();
     }
+
+    public async Task<ServiceResponse<Recipe>> GetRecipe(Guid recipeId)
+    {
+        var result = await _http.GetFromJsonAsync<ServiceResponse<Recipe>>($"api/recipe/{recipeId}");
+        return result;
+    }
 }

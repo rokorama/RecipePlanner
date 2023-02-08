@@ -1,0 +1,58 @@
+@page "/recipe/{Id:guid}"
+@inject IRecipeService RecipeService
+
+@if (Recipe is null)
+{
+    <span>@Message</span>
+}
+else
+{
+    <div class="media">
+        <div class="media-body">
+            <h2 class="mb-0">@Recipe.Name</h2>
+            <p>@Recipe.Description</p>
+            <ul>
+                @foreach (var ingredient in Recipe.Ingredients)
+                {
+                    <li>@ingredient.Name, @ingredient.Preparation - @ingredient.Quantity @ingredient.Measurement</li>
+                }
+            </ul>
+            <ul>
+                @foreach (var step in Recipe.Steps.OrderBy(s => s.Index).ToList())
+                {
+                    <li>@(step.Index + 1) @step.Content</li>
+                }
+            </ul>
+            <p>Vegan? @Recipe.Vegan</p>
+            <p>Vegetarian? @Recipe.Vegetarian</p>
+            <button class="btn btn-primary">
+                <i class="oi oi-fork"></i>&nbsp;&nbsp;&nbsp;Add to List
+            </button>
+            <p>Uploaded by: @Recipe.UploadedBy on @Recipe.DateCreated.ToShortDateString()</p>
+            <p>Original source: @Recipe.Source</p>
+        </div>
+    </div>
+}
+
+@code
+{
+    private Recipe? Recipe = null!;
+    private string Message = string.Empty;
+
+    [Parameter]
+    public Guid Id { get; set; }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        Message = "Loading recipe...";
+        var result = await RecipeService.GetRecipe(Id);
+        if (!result.Success)
+        {
+            Message = result.Message!;
+        }
+        else
+        {
+            Recipe = result.Data;
+        }
+    }
+}

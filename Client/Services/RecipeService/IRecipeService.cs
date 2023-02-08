@@ -6,4 +6,5 @@ public interface IRecipeService
     string Message { get; set; }
     event Action? RecipesChanged;
     Task GetRecipes();
+    Task<ServiceResponse<Recipe>> GetRecipe(Guid id);
 }
