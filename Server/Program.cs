@@ -1,7 +1,8 @@
 global using RecipePlanner.Shared;
 global using Microsoft.EntityFrameworkCore;
+global using RecipePlanner.Server.Data;
+global using RecipePlanner.Server.Services.RecipeService;
 using Microsoft.AspNetCore.ResponseCompression;
-using RecipePlanner.Server.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,6 +12,8 @@ builder.Services.AddDbContext<DataContext>(options =>
 {
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
+
+builder.Services.AddScoped<IRecipeService, RecipeService>();
 
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
