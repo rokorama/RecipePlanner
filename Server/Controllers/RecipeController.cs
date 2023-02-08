@@ -19,4 +19,11 @@ public class RecipeController : ControllerBase
         var result = await _recipeService.GetRecipes();
         return Ok(result);
     }
+
+    [HttpGet("{recipeId}")]
+    public async Task<ActionResult<ServiceResponse<Recipe>>> GetRecipes(Guid recipeId)
+    {
+        var result = await _recipeService.GetRecipe(recipeId);
+        return Ok(result);
+    }
 }

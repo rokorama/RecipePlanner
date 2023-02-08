@@ -18,4 +18,15 @@ public class RecipeService : IRecipeService
         };
         return response;
     }
+
+    public async Task<ServiceResponse<Recipe>> GetRecipe(Guid id)
+    {
+        var response = new ServiceResponse<Recipe>()
+        {
+            Data = await _context.Recipes.Include(r => r.Ingredients)
+                                         .Include(r => r.Steps)
+                                         .FirstOrDefaultAsync(r => r.Id == id)
+        };
+        return response;
+    }
 }
