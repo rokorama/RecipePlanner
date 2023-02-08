@@ -1,9 +1,13 @@
 ﻿@page "/"
+@inject IRecipeService RecipeService
 
-<PageTitle>Index</PageTitle>
+<PageTitle>Recipe Repository</PageTitle>
 
-<h1>Hello, world!</h1>
+<RecipeList />
 
-Welcome to your new app.
-
-<SurveyPrompt Title="How is Blazor working for you?" />
+@code {
+    protected override async Task OnParametersSetAsync()
+    {
+        await RecipeService.GetRecipes();
+    }
+}

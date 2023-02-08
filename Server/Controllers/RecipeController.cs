@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace RecipePlanner.Server.Controllers.RecipeController;
 
 [ApiController]
-[Route("[controller]")]
+[Route("api/[controller]")]
 public class RecipeController : ControllerBase
 {
     private readonly IRecipeService _recipeService;
@@ -12,7 +12,7 @@ public class RecipeController : ControllerBase
     {
         _recipeService = recipeService;
     }
-    
+
     [HttpGet]
     public async Task<ActionResult<ServiceResponse<List<Recipe>>>> GetRecipes()
     {

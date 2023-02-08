@@ -1,0 +1,35 @@
+@using RecipePlanner.Shared
+@using RecipePlanner.Client.Services.RecipeService
+@implements IDisposable
+@inject IRecipeService RecipeService
+
+@if (RecipeService.Recipes is null || RecipeService.Recipes.Count is 0)
+{
+    <span>@RecipeService.Message</span>
+}
+else 
+{
+    @foreach (var recipe in RecipeService.Recipes)
+    {
+        <li class="media my-3">
+            <ul class="list-unstyled">
+                <a href="/recipe/@recipe.Id">
+                    <h4 class="mb-0">@recipe.Name</h4>
+                </a>
+            </ul>
+        </li>
+    }
+}
+
+@code
+{
+    protected override void OnInitialized()
+    {
+        RecipeService.RecipesChanged += StateHasChanged;
+    }
+
+    public void Dispose()
+    {
+        RecipeService.RecipesChanged -= StateHasChanged;
+    }
+}
