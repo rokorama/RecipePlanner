@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using RecipePlanner.Server.Data;
 
@@ -11,9 +12,11 @@ using RecipePlanner.Server.Data;
 namespace RecipePlanner.Server.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20230219202503_RecipeTags")]
+    partial class RecipeTags
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -53,7 +56,7 @@ namespace RecipePlanner.Server.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Recipes", (string)null);
+                    b.ToTable("Recipes");
 
                     b.HasData(
                         new
@@ -97,7 +100,7 @@ namespace RecipePlanner.Server.Migrations
 
                     b.HasIndex("RecipeId");
 
-                    b.ToTable("RecipeIngredients", (string)null);
+                    b.ToTable("RecipeIngredients");
 
                     b.HasData(
                         new
@@ -172,7 +175,7 @@ namespace RecipePlanner.Server.Migrations
 
                     b.HasIndex("RecipeId");
 
-                    b.ToTable("RecipeSteps", (string)null);
+                    b.ToTable("RecipeSteps");
 
                     b.HasData(
                         new
@@ -242,7 +245,7 @@ namespace RecipePlanner.Server.Migrations
 
                     b.HasIndex("RecipeId");
 
-                    b.ToTable("RecipeTags", (string)null);
+                    b.ToTable("RecipeTags");
                 });
 
             modelBuilder.Entity("RecipePlanner.Shared.RecipeIngredient", b =>

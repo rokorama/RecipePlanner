@@ -20,16 +20,25 @@ else
             <ul>
                 @foreach (var step in Recipe.Steps.OrderBy(s => s.Index).ToList())
                 {
-                    <li>@(step.Index + 1) @step.Content</li>
+                    <li>@step.Content</li>
                 }
             </ul>
             <p>Vegan? @Recipe.Vegan</p>
             <p>Vegetarian? @Recipe.Vegetarian</p>
             <button class="btn btn-primary">
-                <i class="oi oi-fork"></i>&nbsp;&nbsp;&nbsp;Add to List
+                <i class="oi oi-plus"></i>Add to List
             </button>
             <p>Uploaded by: @Recipe.UploadedBy on @Recipe.DateCreated.ToShortDateString()</p>
-            <p>Original source: @Recipe.Source</p>
+            @if (Recipe.Source is not null)
+            {
+                <p>Original source: @Recipe.Source</p>
+            }
+
+            Tags:
+            @foreach (var tag in Recipe.Tags)
+            {
+                <p>tag.Content</p>
+            }
         </div>
     </div>
 }

@@ -1,3 +1,5 @@
+using System.ComponentModel.DataAnnotations.Schema;
+
 namespace RecipePlanner.Shared;
 
 public class Recipe
@@ -10,6 +12,11 @@ public class Recipe
     public bool Vegetarian { get; set; }
     public bool Vegan { get; set; }
     public DateTime DateCreated { get; set; }
+    public List<RecipeTag> Tags { get; set; } = new();
     public Guid UploadedBy { get; set; }
     public string? Source { get; set; }
+    [NotMapped]
+    public bool Editing { get; set; } = false;
+    [NotMapped]
+    public bool IsNew { get; set; } = false;
 }
