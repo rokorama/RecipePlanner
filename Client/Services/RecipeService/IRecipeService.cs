@@ -7,4 +7,5 @@ public interface IRecipeService
     event Action? RecipesChanged;
     Task GetRecipes();
     Task<ServiceResponse<Recipe>> GetRecipe(Guid id);
+    Task DeleteRecipe(Recipe recipe);
 }

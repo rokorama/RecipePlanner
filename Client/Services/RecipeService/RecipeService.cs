@@ -31,6 +31,11 @@ public class RecipeService : IRecipeService
     public async Task<ServiceResponse<Recipe>> GetRecipe(Guid recipeId)
     {
         var result = await _http.GetFromJsonAsync<ServiceResponse<Recipe>>($"api/recipe/{recipeId}");
-        return result;
+        return result!;
+    }
+
+    public async Task DeleteRecipe(Recipe recipe)
+    {
+        await _http.DeleteAsync($"api/recipe/{recipe.Id}");
     }
 }
