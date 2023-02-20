@@ -21,9 +21,16 @@ public class RecipeController : ControllerBase
     }
 
     [HttpGet("{recipeId}")]
-    public async Task<ActionResult<ServiceResponse<Recipe>>> GetRecipes(Guid recipeId)
+    public async Task<ActionResult<ServiceResponse<Recipe>>> GetRecipe(Guid recipeId)
     {
         var result = await _recipeService.GetRecipe(recipeId);
+        return Ok(result);
+    }
+
+    [HttpDelete("{recipeId}")]
+    public async Task<ActionResult<ServiceResponse<Recipe>>> DeleteRecipe(Guid recipeId)
+    {
+        var result = await _recipeService.DeleteRecipe(recipeId);
         return Ok(result);
     }
 }

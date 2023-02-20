@@ -29,4 +29,16 @@ public class RecipeService : IRecipeService
         };
         return response;
     }
+
+    public async Task<ServiceResponse<bool>> DeleteRecipe(Guid recipeId)
+    {
+        var recipeToDelete = await _context.Recipes.FirstOrDefaultAsync(r => r.Id == recipeId);
+        if (recipeToDelete is not null)
+            _context.Recipes.Remove(recipeToDelete!);
+        var success = await _context.SaveChangesAsync();
+        return new ServiceResponse<bool>()
+        {
+            Data = success > 0
+        };
+    }
 }

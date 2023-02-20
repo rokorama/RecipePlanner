@@ -11,7 +11,7 @@ public class Recipe
     public List<RecipeStep> Steps { get; set; } = new();
     public bool Vegetarian { get; set; }
     public bool Vegan { get; set; }
-    public Image Image { get; set; } = new();
+    public Image? Image { get; set; } = new();
     public DateTime DateCreated { get; set; }
     public List<RecipeTag> Tags { get; set; } = new();
     public Guid UploadedBy { get; set; }
