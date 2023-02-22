@@ -1,0 +1,167 @@
+@page "/recipe"
+@page "/recipe/{id:guid}/edit"
+@inject IRecipeService RecipeService
+@inject NavigationManager NavigationManager
+@inject IJSRuntime JSRuntime
+
+@if (loading)
+{
+    <span>@msg</span>
+}
+else
+{
+    if (Recipe.Editing)
+    {
+        <h3>Edit @Recipe.Name</h3>
+    }
+    else if (Recipe.IsNew)
+    {
+        <h3>Create a new recipe</h3>
+    }
+
+    <EditForm Model="Recipe" OnValidSubmit="AddOrUpdateRecipe">
+        <DataAnnotationsValidator></DataAnnotationsValidator>
+        <div class="mb-0">
+            <label for="title">Name</label>
+            <InputText id="title" @bind-Value="Recipe.Name" class="form-control"></InputText>
+        </div>
+        @if (Recipe.Image is not null)
+        {
+            <div class="mb-0" style="display: flex; flex-wrap: wrap; flex-direction: row; justify-content:center">
+                <img src="@Recipe.Image.Data" />
+                <button type="button" @onclick="RemoveImage">Remove</button>
+            </div>
+        }
+        <div class="mb-0">
+            <label for="image">Image</label>
+            <InputFile id="image" OnChange="OnFileChange" class="form-control"></InputFile>
+        </div>
+        <div class="mb-0">
+            <label for="description">Description</label>
+            <InputTextArea id="description" @bind-Value="Recipe.Description" class="form-control"></InputTextArea>
+        </div>
+        <hr>
+        <div class="mb-0">
+            <label for="tag">Tags</label>
+            @foreach (var tag in Recipe.Tags)
+            {
+                <div class="form-check">
+                    <InputText id="tag" @bind-Value="tag.Content" class="form-control" />
+                    <button type="button" class="oi oi-plus float-end" @onclick="AddTag" />
+                    @if (Recipe.Tags.Count > 1)
+                    {
+                        <button type="button" class="oi oi-minus float-end" @onclick="(() => RemoveTag(tag))" />
+                    }
+                </div>
+            }
+        </div>
+        <hr>
+        <div class="form-check">
+            <InputCheckbox id="is-vegetarian" @bind-Value="Recipe.Vegetarian" class="form-check-input"></InputCheckbox>
+            <label for="is-vegetarian" class="form-check-label">Vegetarian?</label>
+        </div>
+        <div class="form-check">
+            <InputCheckbox id="is-vegan" @bind-Value="Recipe.Vegan" class="form-check-input"></InputCheckbox>
+            <label for="is-vegan" class="form-check-label">Vegan?</label>
+        </div>
+        <hr>
+        <button type="submit" class="btn btn-primary float-end">@btnText</button>
+        <ValidationSummary></ValidationSummary>
+    </EditForm>
+
+    @if (!Recipe.IsNew)
+    {
+        <button type="button" class="btn btn-danger float-start" @onclick="DeleteRecipe">
+            Delete Recipe
+        </button> 
+    }
+}
+
+@code {
+    [Parameter]
+    public Guid? Id { get; set; }
+
+    Recipe Recipe = new();
+    bool loading = true;
+    string btnText = string.Empty;
+    string msg = "Loading...";
+
+    protected override async Task OnInitializedAsync()
+    {
+    }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if (Id is null)
+        {
+            Recipe = new Recipe();
+            btnText = "Create Recipe";
+        }
+        else
+        {
+            Recipe dbRecipe = (await RecipeService.GetRecipe(Id ?? Guid.Empty)).Data!;
+            if (dbRecipe is null)
+            {
+                msg = $"Recipe with id {Id} could not be found.";
+                return;
+            }
+            Recipe = dbRecipe;
+            btnText = "Update Recipe";
+        }
+        loading = false;
+        AddTag();
+    }
+
+    async Task AddOrUpdateRecipe()
+    {
+        @* if (Recipe.IsNew)
+        {
+            var result = await ProductService.CreateProduct(product);
+            NavigationManager.NavigateTo($"admin/product/{result.Id}");
+        }
+        else
+        {
+            Recipe.IsNew = false;
+            product = await ProductService.UpdateProduct(product);
+            NavigationManager.NavigateTo($"admin/product/{product.Id}", true);
+        } *@
+    }
+
+    async Task DeleteRecipe()
+    {
+        bool confirmed = await JSRuntime.InvokeAsync<bool>("confirm", $"Do you really want to delete {Recipe.Name}?");
+        if (confirmed)
+        {
+            await RecipeService.DeleteRecipe(Recipe);
+            NavigationManager.NavigateTo("admin/products");
+        }
+    }
+
+    async Task OnFileChange(InputFileChangeEventArgs e)
+    {
+        var format = "image/png";
+        var image = e.File;
+        var resizedImage = await image.RequestImageFileAsync(format, 300, 300);
+        var buffer = new byte[resizedImage.Size];
+        await resizedImage.OpenReadStream().ReadAsync(buffer);
+        var imageData = $"data:{format};base64,{Convert.ToBase64String(buffer)}";
+        Recipe.Image = new Image { Data = imageData };
+    }
+
+    void RemoveImage()
+    {
+        Recipe.Image = null;
+    }
+
+    void AddTag()
+    {
+        Recipe.Tags.Add(new RecipeTag { Id = Guid.NewGuid() });
+    }
+
+    void RemoveTag(RecipeTag tag)
+    {
+        Recipe.Tags.Remove(tag);
+    }
+}
+
+
