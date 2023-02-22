@@ -41,4 +41,11 @@ public class RecipeService : IRecipeService
             Data = success > 0
         };
     }
+
+    public async Task<ServiceResponse<Recipe>> CreateRecipe(Recipe recipe)
+    {
+        _context.Recipes.Add(recipe);
+        await _context.SaveChangesAsync();
+        return new ServiceResponse<Recipe> { Data = recipe };
+    }
 }
