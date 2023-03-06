@@ -33,4 +33,18 @@ public class RecipeController : ControllerBase
         var result = await _recipeService.DeleteRecipe(recipeId);
         return Ok(result);
     }
+
+    [HttpPost]
+    public async Task<ActionResult<ServiceResponse<Recipe>>> CreateRecipe(Recipe recipe)
+    {
+        var result = await _recipeService.CreateRecipe(recipe);
+        return Ok(result);
+    }
+
+    [HttpPut]
+    public async Task<ActionResult<ServiceResponse<Recipe>>> UpdateRecipe(Recipe recipe)
+    {
+        var result = await _recipeService.UpdateRecipe(recipe);
+        return Ok(result);
+    }
 }

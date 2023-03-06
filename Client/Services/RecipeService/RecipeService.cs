@@ -38,4 +38,17 @@ public class RecipeService : IRecipeService
     {
         await _http.DeleteAsync($"api/recipe/{recipe.Id}");
     }
+
+    public async Task<Recipe> CreateRecipe(Recipe recipe)
+    {
+        var result = await _http.PostAsJsonAsync("api/recipe", recipe);
+        var newRecipe = (await result.Content.ReadFromJsonAsync<ServiceResponse<Recipe>>())!.Data;
+        return newRecipe!;
+    }
+
+    public async Task<Recipe> UpdateRecipe(Recipe recipe)
+    {
+        var result = await _http.PutAsJsonAsync($"api/recipe", recipe);
+        return (await result.Content.ReadFromJsonAsync<ServiceResponse<Recipe>>())!.Data!;
+    }
 }

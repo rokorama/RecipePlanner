@@ -8,4 +8,6 @@ public interface IRecipeService
     Task GetRecipes();
     Task<ServiceResponse<Recipe>> GetRecipe(Guid id);
     Task DeleteRecipe(Recipe recipe);
+    Task<Recipe> CreateRecipe(Recipe recipe);
+    Task<Recipe> UpdateRecipe(Recipe recipe);
 }
