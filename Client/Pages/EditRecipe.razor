@@ -41,6 +41,7 @@ else
             <InputTextArea id="description" @bind-Value="Recipe.Description" class="form-control"></InputTextArea>
         </div>
         <hr>
+        @* TODO: display steps as MudBlazor chips *@
         <div class="mb-0">
             <label for="tag">Tags</label>
             @foreach (var tag in Recipe.Tags)
@@ -51,6 +52,20 @@ else
                     @if (Recipe.Tags.Count > 1)
                     {
                         <button type="button" class="oi oi-minus float-end" @onclick="(() => RemoveTag(tag))" />
+                    }
+                </div>
+            }
+        </div>
+        <div class="mb-0">
+            <label for="step">Steps</label>
+            @foreach (var step in Recipe.Steps.OrderBy(s => s.Index))
+            {
+                <div class="form-check">
+                    <InputText id="step" @bind-Value="step.Content" class="form-control" />
+                    <button type="button" class="oi oi-plus float-end" @onclick="(() => AddStep(step))" />
+                    @if (Recipe.Steps.Count > 1)
+                    {
+                        <button type="button" class="oi oi-minus float-end" @onclick="(() => RemoveStep(step))" />
                     }
                 </div>
             }
@@ -66,7 +81,7 @@ else
         </div>
         <hr>
         <button type="submit" class="btn btn-primary float-end">@btnText</button>
-        <ValidationSummary></ValidationSummary>
+        <ValidationSummary />
     </EditForm>
 
     @if (!Recipe.IsNew)
@@ -114,17 +129,17 @@ else
 
     async Task AddOrUpdateRecipe()
     {
-        @* if (Recipe.IsNew)
+        if (Recipe.IsNew)
         {
-            var result = await ProductService.CreateProduct(product);
-            NavigationManager.NavigateTo($"admin/product/{result.Id}");
+            var result = await RecipeService.CreateRecipe(Recipe);
+            NavigationManager.NavigateTo($"recipe/{result.Id}");
         }
         else
         {
             Recipe.IsNew = false;
-            product = await ProductService.UpdateProduct(product);
-            NavigationManager.NavigateTo($"admin/product/{product.Id}", true);
-        } *@
+            Recipe = await RecipeService.UpdateRecipe(Recipe);
+            NavigationManager.NavigateTo($"recipe/{Recipe.Id}", true);
+        }
     }
 
     async Task DeleteRecipe()
@@ -133,7 +148,7 @@ else
         if (confirmed)
         {
             await RecipeService.DeleteRecipe(Recipe);
-            NavigationManager.NavigateTo("admin/products");
+            NavigationManager.NavigateTo("admin/recipes");
         }
     }
 
@@ -161,6 +176,24 @@ else
     void RemoveTag(RecipeTag tag)
     {
         Recipe.Tags.Remove(tag);
+    }
+
+    void AddStep(RecipeStep step)
+    {
+        Recipe.Steps.Insert(step.Index, new RecipeStep { Id = Guid.NewGuid(), Index = step.Index + 1 });
+        foreach (var subsequentStep in Recipe.Steps.Where(s => s.Index > step.Index))
+        {
+            subsequentStep.Index++;
+        }
+    }
+
+    void RemoveStep(RecipeStep step)
+    {
+        Recipe.Steps.Remove(step);
+        foreach (var subsequentStep in Recipe.Steps.Where(s => s.Index > step.Index))
+        {
+            subsequentStep.Index--;
+        }
     }
 }
 
