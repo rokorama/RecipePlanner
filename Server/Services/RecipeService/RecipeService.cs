@@ -52,7 +52,10 @@ public class RecipeService : IRecipeService
 
     public async Task<ServiceResponse<Recipe>> UpdateRecipe(Recipe recipe)
     {
-        var dbRecipe = await _context.Recipes.FirstOrDefaultAsync(r => r.Id == recipe.Id);
+        var dbRecipe = await _context.Recipes.Include(r => r.Tags)
+                                             .Include(r => r.Ingredients)
+                                             .Include(r => r.Steps)
+                                             .FirstOrDefaultAsync(r => r.Id == recipe.Id);
         if (dbRecipe is null)
         {
             return new ServiceResponse<Recipe>
@@ -62,6 +65,7 @@ public class RecipeService : IRecipeService
             };
         }
 
+        dbRecipe.Id = recipe.Id;
         dbRecipe.Name = recipe.Name;
         dbRecipe.Description = recipe.Description;
         dbRecipe.Vegetarian = recipe.Vegetarian;
@@ -69,16 +73,25 @@ public class RecipeService : IRecipeService
         dbRecipe.Image = recipe.Image;
         dbRecipe.Source = recipe.Source;
 
-        foreach (var tag in recipe.Tags)
+        if (dbRecipe.Tags != recipe.Tags)
         {
-            var dbTag = await _context.RecipeTags.SingleOrDefaultAsync(t => t.Id == tag.Id);
-            if (dbTag is null)
+            foreach (var tag in recipe.Tags)
             {
-                _context.RecipeTags.Add(tag);
-            }
-            else
-            {
-                dbTag.Content = tag.Content; 
+                var dbTag = await _context.RecipeTags.SingleOrDefaultAsync(t => t.Id == tag.Id);
+                if (dbTag is null)
+                {
+                    if (!string.IsNullOrEmpty(tag.Content))
+                    {
+                        _context.RecipeTags.Add(tag);
+                        tag.RecipeId = recipe.Id;
+                    }
+                }
+                else
+                {
+                    Console.WriteLine(dbTag.RecipeId);
+                    dbTag.RecipeId = recipe.Id;
+                    dbTag.Content = tag.Content; 
+                }
             }
         }
 

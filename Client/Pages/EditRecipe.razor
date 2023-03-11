@@ -55,6 +55,8 @@ else
                     }
                 </div>
             }
+            <InputText id="tag" @bind-Value="newTagContent" class="form-control" />
+            <button type="button" class="oi oi-plus float-end" @onclick="AddTag" />
         </div>
         <div class="mb-0">
             <label for="step">Steps</label>
@@ -97,6 +99,7 @@ else
     public Guid? Id { get; set; }
 
     Recipe Recipe = new();
+    string newTagContent = string.Empty;
     bool loading = true;
     string btnText = string.Empty;
     string msg = "Loading...";
@@ -124,7 +127,6 @@ else
             btnText = "Update Recipe";
         }
         loading = false;
-        AddTag();
     }
 
     async Task AddOrUpdateRecipe()
@@ -170,7 +172,10 @@ else
 
     void AddTag()
     {
-        Recipe.Tags.Add(new RecipeTag { Id = Guid.NewGuid() });
+        if (!string.IsNullOrEmpty(newTagContent))
+        {
+            Recipe.Tags.Add(new RecipeTag { Id = Guid.NewGuid(), Content = newTagContent, RecipeId = Recipe.Id });
+        }
     }
 
     void RemoveTag(RecipeTag tag)
