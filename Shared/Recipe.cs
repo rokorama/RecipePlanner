@@ -12,7 +12,7 @@ public class Recipe
     public bool Vegetarian { get; set; }
     public bool Vegan { get; set; }
     public Image? Image { get; set; } = null!;
-    public DateTime DateCreated { get; set; }
+    public DateTime DateCreated { get; set; } = DateTime.Today;
     public List<RecipeTag> Tags { get; set; } = new();
     public Guid UploadedBy { get; set; }
     public string? Source { get; set; }
