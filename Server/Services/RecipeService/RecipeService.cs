@@ -65,7 +65,6 @@ public class RecipeService : IRecipeService
             };
         }
 
-        dbRecipe.Id = recipe.Id;
         dbRecipe.Name = recipe.Name;
         dbRecipe.Description = recipe.Description;
         dbRecipe.Vegetarian = recipe.Vegetarian;
@@ -82,8 +81,13 @@ public class RecipeService : IRecipeService
                 {
                     if (!string.IsNullOrEmpty(tag.Content))
                     {
-                        _context.RecipeTags.Add(tag);
-                        tag.RecipeId = recipe.Id;
+                        RecipeTag newTag = new()
+                        {
+                            Id = Guid.NewGuid(),
+                            Content = tag.Content,
+                            RecipeId = recipe.Id
+                        };
+                        _context.RecipeTags.Add(newTag);
                     }
                 }
                 else
