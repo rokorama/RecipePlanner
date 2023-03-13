@@ -65,6 +65,11 @@ public class RecipeService : IRecipeService
             };
         }
 
+        foreach (var dbTag in recipe.Tags)
+        {
+            Console.WriteLine($"Sent request with tag {dbTag.Id} attached to recipe {dbTag.RecipeId}");
+        }
+
         dbRecipe.Name = recipe.Name;
         dbRecipe.Description = recipe.Description;
         dbRecipe.Vegetarian = recipe.Vegetarian;
@@ -72,32 +77,24 @@ public class RecipeService : IRecipeService
         dbRecipe.Image = recipe.Image;
         dbRecipe.Source = recipe.Source;
 
-        if (dbRecipe.Tags != recipe.Tags)
+        var existingTags = _context.RecipeTags.Where(t => t.RecipeId == recipe.Id);
+        foreach(var oldTag in existingTags)
         {
-            foreach (var tag in recipe.Tags)
-            {
-                var dbTag = await _context.RecipeTags.SingleOrDefaultAsync(t => t.Id == tag.Id);
-                if (dbTag is null)
-                {
-                    if (!string.IsNullOrEmpty(tag.Content))
-                    {
-                        RecipeTag newTag = new()
-                        {
-                            Id = Guid.NewGuid(),
-                            Content = tag.Content,
-                            RecipeId = recipe.Id
-                        };
-                        _context.RecipeTags.Add(newTag);
-                    }
-                }
-                else
-                {
-                    Console.WriteLine(dbTag.RecipeId);
-                    dbTag.RecipeId = recipe.Id;
-                    dbTag.Content = tag.Content; 
-                }
-            }
+            _context.RecipeTags.Remove(oldTag);
         }
+
+        foreach (var tag in recipe.Tags)
+        {
+            RecipeTag newTag = new()
+            {
+                Id = tag.Id,
+                Content = tag.Content,
+                RecipeId = dbRecipe.Id,
+                Recipe = dbRecipe
+            };
+            _context.RecipeTags.Add(newTag);
+        }
+
 
         foreach (var ingredient in recipe.Ingredients)
         {
