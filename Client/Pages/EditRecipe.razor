@@ -20,71 +20,35 @@ else
     }
 
     <EditForm Model="Recipe" OnValidSubmit="AddOrUpdateRecipe">
-        <DataAnnotationsValidator></DataAnnotationsValidator>
-        <div class="mb-0">
-            <label for="title">Name</label>
-            <InputText id="title" @bind-Value="Recipe.Name" class="form-control"></InputText>
-        </div>
-        @if (Recipe.Image is not null)
-        {
-            <div class="mb-0" style="display: flex; flex-wrap: wrap; flex-direction: row; justify-content:center">
-                <img src="@Recipe.Image.Data" />
-                <button type="button" @onclick="RemoveImage">Remove</button>
-            </div>
-        }
-        <div class="mb-0">
-            <label for="image">Image</label>
-            <InputFile id="image" OnChange="OnFileChange" class="form-control"></InputFile>
-        </div>
-        <div class="mb-0">
-            <label for="description">Description</label>
-            <InputTextArea id="description" @bind-Value="Recipe.Description" class="form-control"></InputTextArea>
-        </div>
-        <hr>
-        @* TODO: display steps as MudBlazor chips *@
-        <div class="mb-0">
-            <label for="tag">Tags</label>
-            @foreach (var tag in Recipe.Tags)
-            {
-                <div class="form-check">
-                    <InputText id="tag" @bind-Value="tag.Content" class="form-control" />
-                    <button type="button" class="oi oi-plus float-end" @onclick="AddTag" />
-                    @if (Recipe.Tags.Count > 1)
+        <DataAnnotationsValidator/>
+        <MudCard>
+            <MudCardContent>
+                <MudTextField Label="Name" @bind-Value="Recipe.Name" For="@(() => Recipe.Name)"/>
+                <MudTextField Label="Description" @bind-Value="Recipe.Description" For="@(() => Recipe.Description)"/>
+                <MudTextField Label="Source" @bind-Value="Recipe.Source" For="@(() => Recipe.Source)" HelperText="If you found this recipe somewhere else, please credit the source"/>
+                <MudCheckBox @bind-Checked="@Recipe.Vegetarian" Label="Vegetarian?" />
+                <MudCheckBox @bind-Checked="@Recipe.Vegan" Label="Vegan?" />
+                <MudChipSet AllClosable="true" OnClose="RemoveTag">
+                    @foreach (var tag in Recipe.Tags)
                     {
-                        <button type="button" class="oi oi-minus float-end" @onclick="(() => RemoveTag(tag))" />
+                        <MudChip Value="@tag" Text="@tag.Content" />
                     }
-                </div>
-            }
-            <InputText id="tag" @bind-Value="newTagContent" class="form-control" />
-            <button type="button" class="oi oi-plus float-end" @onclick="AddTag" />
-        </div>
-        <div class="mb-0">
-            <label for="step">Steps</label>
-            @foreach (var step in Recipe.Steps.OrderBy(s => s.Index))
-            {
-                <div class="form-check">
-                    <InputText id="step" @bind-Value="step.Content" class="form-control" />
-                    <button type="button" class="oi oi-plus float-end" @onclick="(() => AddStep(step))" />
-                    @if (Recipe.Steps.Count > 1)
-                    {
-                        <button type="button" class="oi oi-minus float-end" @onclick="(() => RemoveStep(step))" />
-                    }
-                </div>
-            }
-        </div>
-        <hr>
-        <div class="form-check">
-            <InputCheckbox id="is-vegetarian" @bind-Value="Recipe.Vegetarian" class="form-check-input"></InputCheckbox>
-            <label for="is-vegetarian" class="form-check-label">Vegetarian?</label>
-        </div>
-        <div class="form-check">
-            <InputCheckbox id="is-vegan" @bind-Value="Recipe.Vegan" class="form-check-input"></InputCheckbox>
-            <label for="is-vegan" class="form-check-label">Vegan?</label>
-        </div>
-        <hr>
-        <button type="submit" class="btn btn-primary float-end">@btnText</button>
+                </MudChipSet>
+                <MudGrid>
+                    <MudItem xs="12" sm="7">
+                        <MudTextField Label="Add a new tag" @bind-Value="newTagContent" />
+                    </MudItem>
+                    <MudItem xs="12" sm="2">
+                        <MudIconButton Icon="@Icons.Material.Filled.Add" OnClick="AddTag" />
+                    </MudItem>
+                </MudGrid>
+            </MudCardContent>
+        </MudCard>
+        <MudCardActions>
+            <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto">@btnText</MudButton>
+        </MudCardActions>   
         <ValidationSummary />
-    </EditForm>
+    </EditForm>     
 
     @if (!Recipe.IsNew)
     {
@@ -124,6 +88,7 @@ else
                 return;
             }
             Recipe = dbRecipe;
+            Recipe.Editing = true;
             btnText = "Update Recipe";
         }
         loading = false;
@@ -138,7 +103,11 @@ else
         }
         else
         {
-            Recipe.IsNew = false;
+            foreach (var tag in Recipe.Tags)
+            {
+                Console.WriteLine($"***** RECIPE TAG - {tag.Id.ToString("B")}");
+                Console.WriteLine($"***** RECIPE TAG RECIPE ID - {tag.RecipeId.ToString("B")}");
+            }
             Recipe = await RecipeService.UpdateRecipe(Recipe);
             NavigationManager.NavigateTo($"recipe/{Recipe.Id}", true);
         }
@@ -175,12 +144,13 @@ else
         if (!string.IsNullOrEmpty(newTagContent))
         {
             Recipe.Tags.Add(new RecipeTag { Id = Guid.NewGuid(), Content = newTagContent, RecipeId = Recipe.Id });
+            newTagContent = string.Empty;
         }
     }
 
-    void RemoveTag(RecipeTag tag)
+    void RemoveTag(MudChip chip)
     {
-        Recipe.Tags.Remove(tag);
+        Recipe.Tags.Remove((RecipeTag)chip.Value);
     }
 
     void AddStep(RecipeStep step)
