@@ -24,7 +24,7 @@ else
         <MudCard>
             <MudCardContent>
                 <MudTextField Label="Name" @bind-Value="Recipe.Name" For="@(() => Recipe.Name)"/>
-                <MudTextField Label="Description" @bind-Value="Recipe.Description" For="@(() => Recipe.Description)"/>
+                <MudTextField Label="Description" Lines="7" @bind-Value="Recipe.Description" For="@(() => Recipe.Description)"/>
                 <MudTextField Label="Source" @bind-Value="Recipe.Source" For="@(() => Recipe.Source)" HelperText="If you found this recipe somewhere else, please credit the source"/>
                 <MudCheckBox @bind-Checked="@Recipe.Vegetarian" Label="Vegetarian?" />
                 <MudCheckBox @bind-Checked="@Recipe.Vegan" Label="Vegan?" />
@@ -36,7 +36,8 @@ else
                 </MudChipSet>
                 <MudGrid>
                     <MudItem xs="12" sm="7">
-                        <MudTextField Label="Add a new tag" @bind-Value="newTagContent" />
+                        @* <MudTextField Label="Add a new tag" @bind-Value="@newTagContent" @onkeyup="@TagInputKeydown" ValueChanged="(string newValue) => OnTagChange(newValue)" /> *@
+                        <MudTextField Label="Add Tag" @bind-Value="newTagContent" HelperTextOnFocus="true" HelperText="Enter tags to help you and others find this recipe - please keep them as short as possible"/>
                     </MudItem>
                     <MudItem xs="12" sm="2">
                         <MudIconButton Icon="@Icons.Material.Filled.Add" OnClick="AddTag" />
@@ -103,11 +104,6 @@ else
         }
         else
         {
-            foreach (var tag in Recipe.Tags)
-            {
-                Console.WriteLine($"***** RECIPE TAG - {tag.Id.ToString("B")}");
-                Console.WriteLine($"***** RECIPE TAG RECIPE ID - {tag.RecipeId.ToString("B")}");
-            }
             Recipe = await RecipeService.UpdateRecipe(Recipe);
             NavigationManager.NavigateTo($"recipe/{Recipe.Id}", true);
         }
@@ -171,5 +167,3 @@ else
         }
     }
 }
-
-
