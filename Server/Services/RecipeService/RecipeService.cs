@@ -21,13 +21,14 @@ public class RecipeService : IRecipeService
 
     public async Task<ServiceResponse<Recipe>> GetRecipe(Guid id)
     {
-        var response = new ServiceResponse<Recipe>()
-        {
-            Data = await _context.Recipes.Include(r => r.Ingredients)
-                                         .Include(r => r.Steps)
-                                         .Include(r => r.Tags)
-                                         .FirstOrDefaultAsync(r => r.Id == id)
-        };
+        var recipe = await _context.Recipes.Include(r => r.Ingredients)
+                                           .Include(r => r.Steps)
+                                           .Include(r => r.Tags)
+                                           .FirstOrDefaultAsync(r => r.Id == id);
+        if (recipe is not null)
+            recipe.Steps = recipe.Steps.OrderBy(s => s.Index).ToList();
+        var response = new ServiceResponse<Recipe>() { Data = recipe};
+
         return response;
     }
 

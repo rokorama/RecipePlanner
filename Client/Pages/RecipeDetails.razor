@@ -18,7 +18,7 @@ else
                 }
             </ul>
             <ul>
-                @foreach (var step in Recipe.Steps.OrderBy(s => s.Index).ToList())
+                @foreach (var step in Recipe.Steps)
                 {
                     <li>@step.Content</li>
                 }
