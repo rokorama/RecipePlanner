@@ -96,31 +96,49 @@ public class RecipeService : IRecipeService
             _context.RecipeTags.Add(newTag);
         }
 
+        var existingIngredients = _context.RecipeIngredients.Where(t => t.RecipeId == recipe.Id);
+        foreach(var oldIngredient in existingIngredients)
+        {
+            _context.RecipeIngredients.Remove(oldIngredient);
+        }
 
         foreach (var ingredient in recipe.Ingredients)
         {
-            var dbIngredient = await _context.RecipeIngredients.SingleOrDefaultAsync(i => i.Id == ingredient.Id);
-            if (dbIngredient is null)
+            RecipeIngredient newIngredient = new()
             {
-                _context.RecipeIngredients.Add(ingredient);
-            }
-            else
-            {
-                dbIngredient.Name = ingredient.Name;
-                dbIngredient.Quantity = ingredient.Quantity;
-                dbIngredient.Measurement = ingredient.Measurement;
-                dbIngredient.Preparation = ingredient.Preparation;
-                dbIngredient.Optional = ingredient.Optional;
-            }
+                Id = ingredient.Id,
+                Name = ingredient.Name,
+                Quantity = ingredient.Quantity,
+                Measurement = ingredient.Measurement,
+                Preparation = ingredient.Preparation,
+                Optional = ingredient.Optional,
+                RecipeId = dbRecipe.Id,
+            };
+            _context.RecipeIngredients.Add(newIngredient);
         }
+
+        // foreach (var ingredient in recipe.Ingredients)
+        // {
+        //     var dbIngredient = await _context.RecipeIngredients.SingleOrDefaultAsync(i => i.Id == ingredient.Id);
+        //     if (dbIngredient is null)
+        //     {
+        //         _context.RecipeIngredients.Add(ingredient);
+        //     }
+        //     else
+        //     {
+        //         dbIngredient.Name = ingredient.Name;
+        //         dbIngredient.Quantity = ingredient.Quantity;
+        //         dbIngredient.Measurement = ingredient.Measurement;
+        //         dbIngredient.Preparation = ingredient.Preparation;
+        //         dbIngredient.Optional = ingredient.Optional;
+        //     }
+        // }
 
         var existingSteps = _context.RecipeSteps.Where(t => t.RecipeId == recipe.Id);
         foreach(var oldStep in existingSteps)
         {
             _context.RecipeSteps.Remove(oldStep);
-        }
-
-        
+        }        
 
         foreach (var step in recipe.Steps)
         {

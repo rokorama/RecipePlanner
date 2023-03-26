@@ -28,6 +28,7 @@ else
                 <MudTextField Label="Source" @bind-Value="Recipe.Source" For="@(() => Recipe.Source)" HelperText="If you found this recipe somewhere else, please credit the source"/>
                 <MudCheckBox @bind-Checked="@Recipe.Vegetarian" Label="Vegetarian?" />
                 <MudCheckBox @bind-Checked="@Recipe.Vegan" Label="Vegan?" />
+                <h5>Tags</h5>
                 <MudChipSet AllClosable="true" OnClose="RemoveTag">
                     @foreach (var tag in Recipe.Tags)
                     {
@@ -42,7 +43,8 @@ else
                         <MudIconButton Icon="@Icons.Material.Filled.Add" OnClick="AddTag" />
                     </MudItem>
                 </MudGrid>
-                <hr />
+                <br />
+                <h5>Steps</h5>
                 <MudGrid>
                     @foreach (var step in Recipe.Steps)
                     {
@@ -57,7 +59,46 @@ else
                         </MudItem>
                     }
                 </MudGrid>
-            </MudCardContent>
+            
+                <h5>Ingredients</h5>
+                <MudTable Items="@Recipe.Ingredients">
+                    <HeaderContent>
+                        <MudTh>Ingredient</MudTh>
+                        <MudTh>Quantity</MudTh>
+                        <MudTh>Measurement</MudTh>
+                        <MudTh>Preparation</MudTh>
+                        <MudTh>Optional?</MudTh>
+                    </HeaderContent>
+                    <RowTemplate Context="ingredientContext">
+                        <MudTd DataLabel="Name">@ingredientContext.Name</MudTd>
+                        <MudTd DataLabel="Quantity">@ingredientContext.Quantity</MudTd>
+                        <MudTd DataLabel="Measurement">@ingredientContext.Measurement</MudTd>
+                        <MudTd DataLabel="Preparation">@ingredientContext.Preparation</MudTd>
+                        <MudTd DataLabel="Optional?">@(ingredientContext.Optional ? "Yes" : "")</MudTd>
+                        <MudTd>
+                            <MudIconButton Icon="@Icons.Material.Filled.Remove" OnClick="() => RemoveIngredient(ingredientContext)" Title="Remove this ingredient"/> 
+                        </MudTd>
+                    </RowTemplate>
+                    <RowEditingTemplate Context="ingredientContext">
+                        <MudTd DataLabel="Ingredient">
+                            <MudTextField @bind-Value="@ingredientContext.Name" Required/>
+                        </MudTd>
+                        <MudTd DataLabel="Amount">
+                            <MudNumericField @bind-Value="@ingredientContext.Quantity" Required/>
+                        </MudTd>
+                        <MudTd DataLabel="Unit">
+                            <MudTextField @bind-Value="@ingredientContext.Measurement" />
+                        </MudTd>
+                        <MudTd DataLabel="Preparation">
+                            <MudTextField @bind-Value="@ingredientContext.Preparation" />
+                        </MudTd>
+                        <MudTd DataLabel="Optional?">
+                            <MudCheckBox @bind-Checked="@ingredientContext.Optional" />
+                        </MudTd>
+                    </RowEditingTemplate>
+                </MudTable>
+                <MudButton Color="Color.Primary" Variant="Variant.Filled" OnClick="AddIngredient">Add Ingredient</MudButton>
+            </MudCardContent> 
         </MudCard>
         <MudCardActions>
             <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto">@btnText</MudButton>
@@ -184,5 +225,15 @@ else
         {
             subsequentStep.Index--;
         }
+    }
+
+    void AddIngredient()
+    {
+        Recipe.Ingredients.Add(new RecipeIngredient { Id = Guid.NewGuid(), RecipeId = Recipe.Id });
+    }
+
+    void RemoveIngredient(RecipeIngredient ingredient)
+    {
+        Recipe.Ingredients.Remove(ingredient);
     }
 }
