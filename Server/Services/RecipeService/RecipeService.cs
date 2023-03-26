@@ -113,19 +113,27 @@ public class RecipeService : IRecipeService
                 dbIngredient.Optional = ingredient.Optional;
             }
         }
+
+        var existingSteps = _context.RecipeSteps.Where(t => t.RecipeId == recipe.Id);
+        foreach(var oldStep in existingSteps)
+        {
+            _context.RecipeSteps.Remove(oldStep);
+        }
+
+        
+
         foreach (var step in recipe.Steps)
         {
-            var dbStep = await _context.RecipeSteps.SingleOrDefaultAsync(s => s.Id == step.Id);
-            if (dbStep is null)
+            RecipeStep newStep = new()
             {
-                _context.RecipeSteps.Add(step);
-            }
-            else
-            {
-                dbStep.Index = step.Index;
-                dbStep.Content = step.Content;
-                dbStep.Optional = step.Optional; 
-            }
+                Id = step.Id,
+                Index = step.Index,
+                Content = step.Content,
+                Optional = step.Optional,
+                RecipeId = dbRecipe.Id,
+                Recipe = dbRecipe
+            };
+            _context.RecipeSteps.Add(newStep);
         }
 
         await _context.SaveChangesAsync();

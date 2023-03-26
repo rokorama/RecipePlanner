@@ -36,12 +36,26 @@ else
                 </MudChipSet>
                 <MudGrid>
                     <MudItem xs="12" sm="7">
-                        @* <MudTextField Label="Add a new tag" @bind-Value="@newTagContent" @onkeyup="@TagInputKeydown" ValueChanged="(string newValue) => OnTagChange(newValue)" /> *@
-                        <MudTextField Label="Add Tag" @bind-Value="newTagContent" HelperTextOnFocus="true" HelperText="Enter tags to help you and others find this recipe - please keep them as short as possible"/>
+                        <MudTextField Label="Add Tag" Title="Add Tag" @bind-Value="newTagContent" HelperTextOnFocus="true" HelperText="Enter tags to help you and others find this recipe - please keep them as short as possible"/>
                     </MudItem>
                     <MudItem xs="12" sm="2">
                         <MudIconButton Icon="@Icons.Material.Filled.Add" OnClick="AddTag" />
                     </MudItem>
+                </MudGrid>
+                <hr />
+                <MudGrid>
+                    @foreach (var step in Recipe.Steps)
+                    {
+                        <MudItem xs="12" sm="7">
+                            <MudTextField Label="Add step" @bind-Value="step.Content" />
+                        </MudItem>
+                        <MudItem xs="12" sm="2">
+                            <MudIconButton Icon="@Icons.Material.Filled.Add" OnClick="() => AddStep(step)" Title="Add new step below"/>
+                        </MudItem>
+                        <MudItem xs="12" sm="2">
+                            <MudIconButton Icon="@Icons.Material.Filled.Remove" OnClick="() => RemoveStep(step)" Title="Remove this step"/>
+                        </MudItem>
+                    }
                 </MudGrid>
             </MudCardContent>
         </MudCard>
@@ -65,6 +79,7 @@ else
 
     Recipe Recipe = new();
     string newTagContent = string.Empty;
+    string newStepContent = string.Empty;
     bool loading = true;
     string btnText = string.Empty;
     string msg = "Loading...";
@@ -151,11 +166,15 @@ else
 
     void AddStep(RecipeStep step)
     {
-        Recipe.Steps.Insert(step.Index, new RecipeStep { Id = Guid.NewGuid(), Index = step.Index + 1 });
         foreach (var subsequentStep in Recipe.Steps.Where(s => s.Index > step.Index))
         {
             subsequentStep.Index++;
+            Console.WriteLine($"Text: {subsequentStep.Content} - Index: {subsequentStep.Index}");
+            
         }
+        var newStep = new RecipeStep { Id = Guid.NewGuid(), Index = step.Index + 1, RecipeId = Recipe.Id };
+        Recipe.Steps.Insert(step.Index + 1, newStep);
+        Console.WriteLine($"Text: {newStep.Content} - Index: {newStep.Index}");
     }
 
     void RemoveStep(RecipeStep step)
