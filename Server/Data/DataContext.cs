@@ -122,4 +122,5 @@ public class DataContext : DbContext
     public DbSet<RecipeStep> RecipeSteps { get; set; } = null!;
     public DbSet<RecipeTag> RecipeTags { get; set; } = null!;
     public DbSet<Image> Images { get; set; } = null!;
+    public DbSet<User> Users { get; set; } = null!;
 }
