@@ -95,6 +95,28 @@ public class AuthService : IAuthService
 
     }
 
+    public async Task<ServiceResponse<bool>> ChangePassword(Guid userId, string newPassword)
+    {
+        var user = await _context.Users.FindAsync(userId);
+        if (user is null)
+        {
+            return new ServiceResponse<bool>
+            {
+                Success = false,
+                Message = "User not found"
+            };
+        }
+
+        user.Password = BCrypt.Net.BCrypt.HashPassword(newPassword);
+        await _context.SaveChangesAsync();
+
+        return new ServiceResponse<bool>
+        {
+            Data = true,
+            Message = "Password has been changed."
+        };
+    }
+
     public int GetUserId() => int.Parse(_httpAccessor.HttpContext!.User.FindFirstValue(ClaimTypes.NameIdentifier)!);
     public string GetUserEmail() => _httpAccessor.HttpContext!.User.FindFirstValue(ClaimTypes.Name)!;
 }

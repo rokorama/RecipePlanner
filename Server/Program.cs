@@ -2,10 +2,10 @@ global using RecipePlanner.Shared;
 global using Microsoft.EntityFrameworkCore;
 global using RecipePlanner.Server.Data;
 global using RecipePlanner.Server.Services.RecipeService;
+global using RecipePlanner.Server.Services.AuthService;
 using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
-using RecipePlanner.Server.Services.AuthService;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -24,7 +24,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         options.TokenValidationParameters = new TokenValidationParameters()
         {
             ValidateIssuerSigningKey = true,
-            IssuerSigningKey = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(builder.Configuration.GetSection("AppSettings:Token").Value!)),
+            IssuerSigningKey = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(Environment.GetEnvironmentVariable("JWT_SECRET")!)),
             ValidateIssuer = false,
             ValidateAudience = false
         };

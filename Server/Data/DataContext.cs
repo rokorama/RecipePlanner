@@ -1,5 +1,3 @@
-// using Microsoft.EntityFrameworkCore;
-
 namespace RecipePlanner.Server.Data;
 
 public class DataContext : DbContext
