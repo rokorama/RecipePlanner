@@ -60,13 +60,7 @@ namespace RecipePlanner.Server.Migrations
                     b.Property<string>("Source")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid>("UploadedBy")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid?>("UserId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid?>("UserId1")
+                    b.Property<Guid>("UploadedById")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<bool>("Vegan")
@@ -79,9 +73,7 @@ namespace RecipePlanner.Server.Migrations
 
                     b.HasIndex("ImageId");
 
-                    b.HasIndex("UserId");
-
-                    b.HasIndex("UserId1");
+                    b.HasIndex("UploadedById");
 
                     b.ToTable("Recipes");
 
@@ -89,10 +81,10 @@ namespace RecipePlanner.Server.Migrations
                         new
                         {
                             Id = new Guid("2a3d6c16-98f9-47bf-ad3a-5ed26ec20651"),
-                            DateCreated = new DateTime(2023, 3, 30, 0, 0, 0, 0, DateTimeKind.Local),
+                            DateCreated = new DateTime(2023, 5, 4, 0, 0, 0, 0, DateTimeKind.Local),
                             Description = "A simple dish made only with leftover rice and an egg. Feel free to add any other ingredients like vegetables or meat.",
                             Name = "Egg fried rice",
-                            UploadedBy = new Guid("9841dbcf-02a4-4be6-9545-35aff7db9c7b"),
+                            UploadedById = new Guid("00000000-0000-0000-0000-000000000000"),
                             Vegan = false,
                             Vegetarian = true
                         });
@@ -303,6 +295,39 @@ namespace RecipePlanner.Server.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Users");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("9841dbcf-02a4-4be6-9545-35aff7db9c7b"),
+                            DateCreated = new DateTime(2023, 5, 4, 0, 0, 0, 0, DateTimeKind.Local),
+                            Email = "asd@asd.asd",
+                            Name = "User",
+                            Password = "",
+                            Role = "user"
+                        });
+                });
+
+            modelBuilder.Entity("RecipePlanner.Shared.UserRecipe", b =>
+                {
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("RecipeId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("UserId", "RecipeId");
+
+                    b.HasIndex("RecipeId");
+
+                    b.ToTable("UserRecipes");
+
+                    b.HasData(
+                        new
+                        {
+                            UserId = new Guid("9841dbcf-02a4-4be6-9545-35aff7db9c7b"),
+                            RecipeId = new Guid("2a3d6c16-98f9-47bf-ad3a-5ed26ec20651")
+                        });
                 });
 
             modelBuilder.Entity("RecipePlanner.Shared.Recipe", b =>
@@ -311,15 +336,15 @@ namespace RecipePlanner.Server.Migrations
                         .WithMany()
                         .HasForeignKey("ImageId");
 
-                    b.HasOne("RecipePlanner.Shared.User", null)
-                        .WithMany("SavedRecipes")
-                        .HasForeignKey("UserId");
-
-                    b.HasOne("RecipePlanner.Shared.User", null)
+                    b.HasOne("RecipePlanner.Shared.User", "UploadedBy")
                         .WithMany("UploadedRecipes")
-                        .HasForeignKey("UserId1");
+                        .HasForeignKey("UploadedById")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Image");
+
+                    b.Navigation("UploadedBy");
                 });
 
             modelBuilder.Entity("RecipePlanner.Shared.RecipeIngredient", b =>
@@ -353,9 +378,30 @@ namespace RecipePlanner.Server.Migrations
                     b.Navigation("Recipe");
                 });
 
+            modelBuilder.Entity("RecipePlanner.Shared.UserRecipe", b =>
+                {
+                    b.HasOne("RecipePlanner.Shared.Recipe", "Recipe")
+                        .WithMany("SavedBy")
+                        .HasForeignKey("RecipeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("RecipePlanner.Shared.User", "User")
+                        .WithMany("SavedRecipes")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("Recipe");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("RecipePlanner.Shared.Recipe", b =>
                 {
                     b.Navigation("Ingredients");
+
+                    b.Navigation("SavedBy");
 
                     b.Navigation("Steps");
 

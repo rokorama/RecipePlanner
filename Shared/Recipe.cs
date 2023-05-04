@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace RecipePlanner.Shared;
 
@@ -14,7 +15,10 @@ public class Recipe
     public Image? Image { get; set; } = null!;
     public DateTime DateCreated { get; set; } = DateTime.Today;
     public List<RecipeTag> Tags { get; set; } = new();
-    public Guid UploadedBy { get; set; }
+    public Guid UploadedById { get; set; }
+    [JsonIgnore]
+    public User UploadedBy { get; set; }
+    public List<UserRecipe> SavedBy { get; set; } = new();
     public string? Source { get; set; }
     [NotMapped]
     public bool Editing { get; set; } = false;
