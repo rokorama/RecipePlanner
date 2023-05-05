@@ -13,10 +13,10 @@ public class AuthService : IAuthService
         _authStateProvider = authStateProvider;
     }
 
-    public async Task<ServiceResponse<int>> Register(UserRegister request)
+    public async Task<ServiceResponse<Guid>> Register(UserRegister request)
     {
         var result = await _http.PostAsJsonAsync("api/auth/register", request);
-        return await result.Content.ReadFromJsonAsync<ServiceResponse<int>>();
+        return await result.Content.ReadFromJsonAsync<ServiceResponse<Guid>>();
     }
 
     public async Task<ServiceResponse<string>> Login(UserLogin request)
