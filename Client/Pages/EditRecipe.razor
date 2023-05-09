@@ -1,8 +1,10 @@
-@page "/recipe"
+@page "/recipe/new"
 @page "/recipe/{id:guid}/edit"
 @inject IRecipeService RecipeService
+@inject IAuthService AuthService
 @inject NavigationManager NavigationManager
 @inject IJSRuntime JSRuntime
+@attribute [Authorize]
 
 @if (loading)
 {
@@ -10,12 +12,17 @@
 }
 else
 {
+    if (!Recipe.IsNew && Recipe.UploadedById != UserId)
+    {
+        <h3>You are not authorized to edit this recipe.</h3>
+        return;
+    }
     if (Recipe.Editing)
     {
         <h3>Edit @Recipe.Name</h3>
     }
     else if (Recipe.IsNew)
-    {
+    { 
         <h3>Create a new recipe</h3>
     }
 
@@ -117,6 +124,7 @@ else
 @code {
     [Parameter]
     public Guid? Id { get; set; }
+    public Guid UserId { get; set; }
 
     Recipe Recipe = new();
     string newTagContent = string.Empty;
@@ -127,13 +135,18 @@ else
 
     protected override async Task OnInitializedAsync()
     {
+        UserId = await AuthService.GetUserId();
     }
 
     protected override async Task OnParametersSetAsync()
     {
         if (Id is null)
         {
-            Recipe = new Recipe();
+            Recipe = new Recipe()
+            {
+                UploadedById = UserId,
+                IsNew = true
+            };
             btnText = "Create Recipe";
         }
         else

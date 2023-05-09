@@ -1,5 +1,6 @@
 @page "/recipe/{id:guid}"
 @inject IRecipeService RecipeService
+@attribute [Authorize]
 
 @if (Recipe is null)
 {
@@ -40,6 +41,9 @@ else
                 <p>@tag.Content</p>
             }
         </div>
+        <AuthorizeView>
+            <MudButton Href="@($"recipe/{Id}/edit")" Disabled="@(Recipe.UploadedById != Guid.Parse(context.User.FindFirst(ClaimTypes.NameIdentifier).Value))">Edit Recipe</MudButton>
+        </AuthorizeView>
     </div>
 }
 
