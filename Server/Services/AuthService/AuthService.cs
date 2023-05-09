@@ -117,6 +117,6 @@ public class AuthService : IAuthService
         };
     }
 
-    public int GetUserId() => int.Parse(_httpAccessor.HttpContext!.User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+    public Guid GetUserId() => Guid.Parse(_httpAccessor.HttpContext!.User.FindFirstValue(ClaimTypes.NameIdentifier)!);
     public string GetUserEmail() => _httpAccessor.HttpContext!.User.FindFirstValue(ClaimTypes.Name)!;
 }

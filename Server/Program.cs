@@ -3,7 +3,6 @@ global using Microsoft.EntityFrameworkCore;
 global using RecipePlanner.Server.Data;
 global using RecipePlanner.Server.Services.RecipeService;
 global using RecipePlanner.Server.Services.AuthService;
-using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 
@@ -21,6 +20,7 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddScoped<IRecipeService, RecipeService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
+
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {

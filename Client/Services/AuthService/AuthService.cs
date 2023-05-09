@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using Microsoft.AspNetCore.Components.Authorization;
 
 namespace RecipePlanner.Client.Services.AuthService;
@@ -34,5 +35,10 @@ public class AuthService : IAuthService
     public async Task<bool> UserIsAuthenticated()
     {
         return (await _authStateProvider.GetAuthenticationStateAsync()).User.Identity!.IsAuthenticated;
+    }
+
+    public async Task<Guid> GetUserId()
+    {
+        return Guid.Parse((await _authStateProvider.GetAuthenticationStateAsync()).User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
     }
 }
