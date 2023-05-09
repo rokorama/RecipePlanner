@@ -1,13 +1,9 @@
 ﻿@page "/"
 @inject IRecipeService RecipeService
 
-<PageTitle>Recipe Repository</PageTitle>
+<PageTitle>Home</PageTitle>
 
-<RecipeList />
+Heyo!
 
 @code {
-    protected override async Task OnParametersSetAsync()
-    {
-        await RecipeService.GetRecipes();
-    }
 }

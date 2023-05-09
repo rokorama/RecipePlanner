@@ -9,24 +9,28 @@
 
 <h3>Login</h3>
 
-<EditForm Model="User" OnValidSubmit="HandleLogin">
-        <DataAnnotationsValidator/>
-        <MudCard>
-            <MudCardContent>
-                <MudTextField Label="Email" @bind-Value="User.Email" For="@(() => User.Email)"></MudTextField>
-                <MudTextField Label="Password" Class="mt-3"
-                              @bind-Value="User.Password" For="@(() => User.Password)" InputType="InputType.Password"/>
-            </MudCardContent>
-        </MudCard>
+<EditForm Model="User" @bind-IsValid="@success" OnValidSubmit="HandleLogin">
+<DataAnnotationsValidator />
+    <MudCard>
+        <MudCardContent>
+            <MudTextField Label="Email" @bind-Value="User.Email" For="@(() => User.Email)"></MudTextField>
+            <MudTextField Label="Password" Class="mt-3"
+                            @bind-Value="User.Password" For="@(() => User.Password)" InputType="InputType.Password"/>
+        </MudCardContent>
+        <MudCardActions>
+            <MudButton Variant="Variant.Filled" ButtonType="ButtonType.Submit" Color="Color.Primary" Class="ml-auto">Login</MudButton>
+        </MudCardActions>
+    </MudCard>
 </EditForm>
 
 @code {
     private UserLogin User { get; set; } = new UserLogin();
+    private bool success = false;
     private string errorMessage = string.Empty;
     private string returnUrl = string.Empty;
 
-        protected override void OnInitialized()
-        {
+    protected override void OnInitialized()
+    {
         var uri = NavigationManager.ToAbsoluteUri(NavigationManager.Uri);
         if (QueryHelpers.ParseQuery(uri.Query).TryGetValue("returnUrl", out var url))
         {
