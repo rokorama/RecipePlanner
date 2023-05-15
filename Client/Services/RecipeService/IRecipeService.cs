@@ -10,4 +10,5 @@ public interface IRecipeService
     Task DeleteRecipe(Recipe recipe);
     Task<Recipe> CreateRecipe(Recipe recipe);
     Task<Recipe> UpdateRecipe(Recipe recipe);
+    Task<bool> SaveRecipe(UserRecipe userRecipe);
 }

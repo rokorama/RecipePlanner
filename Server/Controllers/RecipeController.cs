@@ -47,4 +47,11 @@ public class RecipeController : ControllerBase
         var result = await _recipeService.UpdateRecipe(recipe);
         return Ok(result);
     }
+
+    [HttpPost("save")]
+    public async Task<ActionResult<ServiceResponse<bool>>> SaveRecipe(UserRecipe userRecipe)
+    {
+        var result = await _recipeService.SaveRecipe(userRecipe);
+        return Ok(result);
+    }
 }

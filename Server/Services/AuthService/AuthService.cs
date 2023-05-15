@@ -117,6 +117,25 @@ public class AuthService : IAuthService
         };
     }
 
-    public Guid GetUserId() => Guid.Parse(_httpAccessor.HttpContext!.User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+    public async Task<ServiceResponse<User>> GetUser(Guid userId)
+    {
+        Console.WriteLine($"Id is {userId}");
+        
+        var user = await _context.Users.FindAsync(userId);
+        if (user is null)
+        {
+            return new ServiceResponse<User>
+            {
+                Success = false,
+                Message = "User not found"
+            };
+        }
+
+        return new ServiceResponse<User>
+        {
+            Data = user
+        };
+    }
+    
     public string GetUserEmail() => _httpAccessor.HttpContext!.User.FindFirstValue(ClaimTypes.Name)!;
 }

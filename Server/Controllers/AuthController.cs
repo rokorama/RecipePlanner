@@ -48,4 +48,17 @@ public class AuthController : ControllerBase
 
         return Ok(response);
     }
+
+    [HttpGet("user/{userId}"), Authorize]
+    public async Task<ActionResult<ServiceResponse<User>>> GetUser(Guid userId)
+    {
+        Console.WriteLine($"Calling controller with userId: {userId}");
+        
+        var response = await _authService.GetUser(userId);
+
+        if (!response.Success)
+            return BadRequest(response);
+
+        return Ok(response);
+    }
 }

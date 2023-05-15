@@ -1,5 +1,6 @@
 @page "/recipe/{id:guid}"
 @inject IRecipeService RecipeService
+@inject IAuthService AuthService
 @attribute [Authorize]
 
 @if (Recipe is null)
@@ -12,23 +13,24 @@ else
         <div class="media-body">
             <h2 class="mb-0">@Recipe.Name</h2>
             <p>@Recipe.Description</p>
+            <h5>Ingredients</h5>
             <ul>
                 @foreach (var ingredient in Recipe.Ingredients)
                 {
                     <li>@ingredient.Name, @ingredient.Preparation - @ingredient.Quantity @ingredient.Measurement</li>
                 }
             </ul>
+            <h5>Preparation</h5>
             <ul>
                 @foreach (var step in Recipe.Steps)
                 {
                     <li>@step.Content</li>
                 }
             </ul>
-            <p>Vegan? @Recipe.Vegan</p>
-            <p>Vegetarian? @Recipe.Vegetarian</p>
-            <button class="btn btn-primary">
-                <i class="oi oi-plus"></i>Add to List
-            </button>
+            <div>
+                <MudCheckBox ReadOnly="true" @bind-Checked="@Recipe.Vegetarian" Label="Vegetarian?"/>
+                <MudCheckBox ReadOnly="true" @bind-Checked="@Recipe.Vegan" Label="Vegan?"/>
+            </div>
             <p>Uploaded by: @Recipe.UploadedById on @Recipe.DateCreated.ToShortDateString()</p>
             @if (Recipe.Source is not null)
             {
@@ -38,11 +40,15 @@ else
             Tags:
             @foreach (var tag in Recipe.Tags)
             {
-                <p>@tag.Content</p>
+                <MudChip>@tag.Content</MudChip>
             }
         </div>
         <AuthorizeView>
-            <MudButton Href="@($"recipe/{Id}/edit")" Disabled="@(Recipe.UploadedById != Guid.Parse(context.User.FindFirst(ClaimTypes.NameIdentifier).Value))">Edit Recipe</MudButton>
+            <MudButton OnClick="SaveRecipe">Add to Saved Recipes</MudButton>
+            @if (Recipe.UploadedById != UserId.Value)
+            {
+                <MudButton Href="@($"recipe/{Id}/edit")">Edit Recipe</MudButton>
+            }
         </AuthorizeView>
     </div>
 }
@@ -51,6 +57,7 @@ else
 {
     private Recipe? Recipe = null;
     private string Message = string.Empty;
+    private Guid? UserId { get; set; }
 
     [Parameter]
     public Guid Id { get; set; }
@@ -66,6 +73,25 @@ else
         else
         {
             Recipe = result.Data;
+        }
+        UserId = await AuthService.GetUserId();
+    }
+
+    private async Task SaveRecipe()
+    {
+        var entry = new UserRecipe
+        {
+            RecipeId = Recipe!.Id,
+            UserId = UserId.Value
+        };
+        var result = await RecipeService.SaveRecipe(entry);
+        if (!result)
+        {
+            Message = "Recipe could not be saved.";
+        }
+        else
+        {
+            Message = "Recipe saved!";
         }
     }
 }

@@ -144,7 +144,10 @@ else
         {
             Recipe = new Recipe()
             {
+                Id = Guid.NewGuid(),
                 UploadedById = UserId,
+                Steps = new List<RecipeStep> { new RecipeStep { Id = Guid.NewGuid(), Index = 0, RecipeId = Recipe.Id }},
+                Ingredients = new List<RecipeIngredient> { new RecipeIngredient { Id = Guid.NewGuid(), RecipeId = Recipe.Id }},
                 IsNew = true
             };
             btnText = "Create Recipe";

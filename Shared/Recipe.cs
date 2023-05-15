@@ -16,8 +16,8 @@ public class Recipe
     public DateTime DateCreated { get; set; } = DateTime.Today;
     public List<RecipeTag> Tags { get; set; } = new();
     public Guid UploadedById { get; set; }
-    [JsonIgnore]
-    public User UploadedBy { get; set; }
+    // [JsonIgnore]
+    // public User UploadedBy { get; set; }
     public List<UserRecipe> SavedBy { get; set; } = new();
     public string? Source { get; set; }
     [NotMapped]

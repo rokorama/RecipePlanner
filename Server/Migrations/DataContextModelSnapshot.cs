@@ -63,6 +63,9 @@ namespace RecipePlanner.Server.Migrations
                     b.Property<Guid>("UploadedById")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<Guid?>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<bool>("Vegan")
                         .HasColumnType("bit");
 
@@ -73,7 +76,7 @@ namespace RecipePlanner.Server.Migrations
 
                     b.HasIndex("ImageId");
 
-                    b.HasIndex("UploadedById");
+                    b.HasIndex("UserId");
 
                     b.ToTable("Recipes");
 
@@ -81,7 +84,7 @@ namespace RecipePlanner.Server.Migrations
                         new
                         {
                             Id = new Guid("2a3d6c16-98f9-47bf-ad3a-5ed26ec20651"),
-                            DateCreated = new DateTime(2023, 5, 4, 0, 0, 0, 0, DateTimeKind.Local),
+                            DateCreated = new DateTime(2023, 5, 15, 0, 0, 0, 0, DateTimeKind.Local),
                             Description = "A simple dish made only with leftover rice and an egg. Feel free to add any other ingredients like vegetables or meat.",
                             Name = "Egg fried rice",
                             UploadedById = new Guid("00000000-0000-0000-0000-000000000000"),
@@ -300,7 +303,7 @@ namespace RecipePlanner.Server.Migrations
                         new
                         {
                             Id = new Guid("9841dbcf-02a4-4be6-9545-35aff7db9c7b"),
-                            DateCreated = new DateTime(2023, 5, 4, 0, 0, 0, 0, DateTimeKind.Local),
+                            DateCreated = new DateTime(2023, 5, 15, 0, 0, 0, 0, DateTimeKind.Local),
                             Email = "asd@asd.asd",
                             Name = "User",
                             Password = "",
@@ -336,15 +339,11 @@ namespace RecipePlanner.Server.Migrations
                         .WithMany()
                         .HasForeignKey("ImageId");
 
-                    b.HasOne("RecipePlanner.Shared.User", "UploadedBy")
+                    b.HasOne("RecipePlanner.Shared.User", null)
                         .WithMany("UploadedRecipes")
-                        .HasForeignKey("UploadedById")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("UserId");
 
                     b.Navigation("Image");
-
-                    b.Navigation("UploadedBy");
                 });
 
             modelBuilder.Entity("RecipePlanner.Shared.RecipeIngredient", b =>
@@ -389,7 +388,7 @@ namespace RecipePlanner.Server.Migrations
                     b.HasOne("RecipePlanner.Shared.User", "User")
                         .WithMany("SavedRecipes")
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.NoAction)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Recipe");

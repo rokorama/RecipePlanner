@@ -51,4 +51,10 @@ public class RecipeService : IRecipeService
         var result = await _http.PutAsJsonAsync($"api/recipe", recipe);
         return (await result.Content.ReadFromJsonAsync<ServiceResponse<Recipe>>())!.Data!;
     }
+
+    public async Task<bool> SaveRecipe(UserRecipe userRecipe)
+    {
+        var result = await _http.PostAsJsonAsync($"api/recipe/save", userRecipe);
+        return (await result.Content.ReadFromJsonAsync<ServiceResponse<bool>>())!.Data!;
+    }
 }

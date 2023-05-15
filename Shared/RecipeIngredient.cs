@@ -2,7 +2,6 @@ namespace RecipePlanner.Shared;
 
 public class RecipeIngredient
 {
-    // public Recipe Recipe { get; set; } = new();
     public Guid RecipeId { get; set; }
     public Guid Id { get; set; }
     public string Name { get; set; } = string.Empty;

@@ -157,4 +157,24 @@ public class RecipeService : IRecipeService
         await _context.SaveChangesAsync();
         return new ServiceResponse<Recipe> { Data = recipe };
     }
+
+    public async Task<ServiceResponse<bool>> SaveRecipe(UserRecipe userRecipe)
+    {
+        var dbUserRecipe = await _context.UserRecipes.FirstOrDefaultAsync(ur => ur.UserId == userRecipe.UserId && ur.RecipeId == userRecipe.RecipeId);
+        if (dbUserRecipe is not null)
+        {
+            _context.UserRecipes.Remove(dbUserRecipe);
+        }
+        else
+        {
+            UserRecipe newUserRecipe = new()
+            {
+                UserId = userRecipe.UserId,
+                RecipeId = userRecipe.RecipeId
+            };
+            _context.UserRecipes.Add(newUserRecipe);
+        }
+        await _context.SaveChangesAsync();
+        return new ServiceResponse<bool> { Data = true };
+    }
 }
