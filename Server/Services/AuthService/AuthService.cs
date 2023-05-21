@@ -9,12 +9,14 @@ public class AuthService : IAuthService
     private readonly DataContext _context;
     private readonly IConfiguration _config;
     private IHttpContextAccessor _httpAccessor;
+    private IRecipeService _recipeService;
 
-    public AuthService(DataContext context, IConfiguration config, IHttpContextAccessor httpAccessor)
+    public AuthService(DataContext context, IConfiguration config, IHttpContextAccessor httpAccessor, IRecipeService recipeService)
     {
         _context = context;
         _config = config;
         _httpAccessor = httpAccessor;
+        _recipeService = recipeService;
     }
 
 
@@ -117,6 +119,31 @@ public class AuthService : IAuthService
         };
     }
 
-    public Guid GetUserId() => Guid.Parse(_httpAccessor.HttpContext!.User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+    public async Task<ServiceResponse<UserDto>> GetUser(Guid userId)
+    { 
+        var user = await _context.Users.Include(u => u.SavedRecipes)
+                                       .ThenInclude(sr => sr.Recipe)
+                                       .FirstOrDefaultAsync(u => u.Id == userId);
+        if (user is null)
+        {
+            return new ServiceResponse<UserDto>
+            {
+                Success = false,
+                Message = "User not found"
+            };
+        }
+
+        return new ServiceResponse<UserDto>
+        {
+            Data = new UserDto
+            {
+                Id = user.Id,
+                Name = user.Name,
+                Email = user.Email,
+                SavedRecipes = _recipeService.GetSavedRecipes(userId).Result.Data
+            }
+        };
+    }
+    
     public string GetUserEmail() => _httpAccessor.HttpContext!.User.FindFirstValue(ClaimTypes.Name)!;
 }

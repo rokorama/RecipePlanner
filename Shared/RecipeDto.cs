@@ -3,7 +3,7 @@ using System.Text.Json.Serialization;
 
 namespace RecipePlanner.Shared;
 
-public class Recipe
+public class RecipeDto
 {
     public Guid Id { get; set; }
     public string Name { get; set; } = string.Empty;
@@ -16,7 +16,7 @@ public class Recipe
     public DateTime DateCreated { get; set; } = DateTime.Today;
     public List<RecipeTag> Tags { get; set; } = new();
     public Guid UploadedById { get; set; }
-    public List<UserRecipe> SavedBy { get; set; } = new();
+    public List<Guid> SavedBy { get; set; } = new();
     public string? Source { get; set; }
     [NotMapped]
     public bool Editing { get; set; } = false;

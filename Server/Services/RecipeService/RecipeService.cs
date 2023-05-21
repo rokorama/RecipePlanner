@@ -157,4 +157,41 @@ public class RecipeService : IRecipeService
         await _context.SaveChangesAsync();
         return new ServiceResponse<Recipe> { Data = recipe };
     }
+
+    public async Task<ServiceResponse<bool>> SaveRecipe(UserRecipeDto userRecipe)
+    {
+        var dbUserRecipe = await _context.UserRecipes.FirstOrDefaultAsync(ur => ur.UserId == userRecipe.UserId && ur.RecipeId == userRecipe.RecipeId);
+        if (dbUserRecipe is not null)
+        {
+            _context.UserRecipes.Remove(dbUserRecipe);
+        }
+        else
+        {
+            UserRecipe newUserRecipe = new()
+            {
+                UserId = userRecipe.UserId,
+                User = await _context!.Users!.FirstOrDefaultAsync(u => u.Id == userRecipe.UserId),
+                RecipeId = userRecipe.RecipeId,
+                Recipe = await _context!.Recipes!.FirstOrDefaultAsync(r => r.Id == userRecipe.RecipeId)
+            };
+            _context.UserRecipes.Add(newUserRecipe);
+        }
+        await _context.SaveChangesAsync();
+        return new ServiceResponse<bool> { Data = true };
+    }
+
+    public async Task<ServiceResponse<List<UserRecipeDto>>> GetSavedRecipes(Guid userId)
+    {
+        var savedRecipes = await _context.UserRecipes.Where(ur => ur.UserId == userId).ToListAsync();
+        var savedRecipesDto = new List<UserRecipeDto>();
+        foreach (var savedRecipe in savedRecipes)
+        {
+            savedRecipesDto.Add(new UserRecipeDto
+            {
+                UserId = savedRecipe.UserId,
+                RecipeId = savedRecipe.RecipeId
+            });
+        }
+        return new ServiceResponse<List<UserRecipeDto>> { Data = savedRecipesDto };
+    }
 }

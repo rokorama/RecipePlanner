@@ -1,5 +1,6 @@
 @page "/recipe/{id:guid}"
 @inject IRecipeService RecipeService
+@inject IAuthService AuthService
 
 @if (Recipe is null)
 {
@@ -40,6 +41,13 @@ else
                 <p>@tag.Content</p>
             }
         </div>
+        <AuthorizeView>
+            <MudButton OnClick="@SaveRecipe">@saveButtonText</MudButton>
+            @if (Recipe.UploadedById != User!.Id)
+            {
+                <MudButton Href="@($"recipe/{Id}/edit")">Edit Recipe</MudButton>
+            }
+        </AuthorizeView>
     </div>
 }
 
@@ -47,13 +55,17 @@ else
 {
     private Recipe? Recipe = null;
     private string Message = string.Empty;
-
+    private UserDto? User { get; set; }
+    private string saveButtonText => recipeSaved ? "Remove from Saved Recipes" : "Save Recipe";
+    private bool recipeSaved;
+    
     [Parameter]
     public Guid Id { get; set; }
 
     protected override async Task OnParametersSetAsync()
     {
         Message = "Loading recipe...";
+        User = await AuthService.GetUser(await AuthService.GetUserId());
         var result = await RecipeService.GetRecipe(Id);
         if (!result.Success)
         {
@@ -62,6 +74,27 @@ else
         else
         {
             Recipe = result.Data;
+            recipeSaved = User.SavedRecipes.Any(r => r.RecipeId == Recipe!.Id);
+        }
+    }
+
+    private async Task SaveRecipe()
+    {
+        var entry = new UserRecipeDto
+        {
+            RecipeId = Recipe!.Id,
+            UserId = User!.Id,
+        };
+        User.SavedRecipes.Remove(entry);
+        var result = await RecipeService.SaveRecipe(entry);
+        recipeSaved = !recipeSaved;
+        if (!result)
+        {
+            Message = "Recipe could not be saved.";
+        }
+        else
+        {
+            Message = "Recipe saved!";
         }
     }
 }

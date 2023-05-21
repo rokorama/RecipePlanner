@@ -41,4 +41,10 @@ public class AuthService : IAuthService
     {
         return Guid.Parse((await _authStateProvider.GetAuthenticationStateAsync()).User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
     }
+
+    public async Task<UserDto> GetUser(Guid userId)
+    {
+        var result = await _http.GetFromJsonAsync<ServiceResponse<UserDto>>($"api/auth/user/{userId}");
+        return result!.Data!;
+    }
 }
